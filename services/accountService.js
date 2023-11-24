@@ -1,8 +1,20 @@
-import { setToken } from "../lib/auth";
+import { BehaviorSubject } from 'rxjs';
+import { getToken, setToken, removeToken } from "../lib/auth";
+
+const userSubject = new BehaviorSubject(process.browser && getToken())
 
 export const accountService = {
+    user: userSubject.asObservable(),
+    get userValue() { return userSubject.value },
     login,
+    logout,
 };
+
+async function logout(router) {
+    removeToken();
+    userSubject.next(null);
+    router.push("/account/login");
+}
 
 async function login(router, data, pMessage) {
     let isError = false;
@@ -21,8 +33,10 @@ async function login(router, data, pMessage) {
                 pMessage.innerHTML = res.message;
                 return
             }
+            userSubject.next(res.token);
             setToken(res.token);
-            router.push('/');
+            const returnUrl = router.query.returnUrl || '/';
+            router.push(returnUrl);
         })
         .catch((error) => {
             pMessage.innerHTML = error;

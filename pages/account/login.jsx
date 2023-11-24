@@ -2,9 +2,11 @@ import Layout from "../../components/layout";
 import styles from "../../styles/utils.module.css";
 import { accountService } from "../../services/accountService";
 import { useRouter } from "next/router"
+import { useEffect } from "react";
 
-export default function Login() {
+const Login = () => {
     const router = useRouter();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         var formData = new FormData(e.target)
@@ -48,3 +50,19 @@ export default function Login() {
         </Layout>
     )
 }
+
+export async function getStaticProps(context) {
+    if (accountService.userValue) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: "/",
+            }
+        }
+    }
+    return {
+        props: {},
+    }
+}
+
+export default Login;
