@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import utilStyles from '../styles/utils.module.css';
+import Link from 'next/link';
 
 const Layout = ({ home, children, title }) => {
     return (
@@ -11,7 +11,10 @@ const Layout = ({ home, children, title }) => {
         <div className="container">
             <h1 className="headingXL text-center mb-5 mt-3">{title}</h1>
             <main>{children}</main>
-        </div>
+            {!home && (
+                <Link href="/">Back To Home</Link>
+            )}
+        </div>        
         </>
     )
 }

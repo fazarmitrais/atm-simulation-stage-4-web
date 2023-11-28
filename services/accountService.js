@@ -8,7 +8,51 @@ export const accountService = {
     get userValue() { return userSubject.value },
     login,
     logout,
+    list,
+    createAccount,
+    accountImport,
 };
+
+async function accountImport(formData) {
+    const token = getToken();
+    const resp = await fetch("http://localhost:8080/api/v1/account/import", {
+        method: "POST",
+        headers: {
+            'Authorization': "Bearer " + token,
+        },
+        body: formData,
+    });
+    return await resp.json();
+}
+
+async function list(req) {
+    const token = getToken(req);
+    const resp = await fetch("http://localhost:8080/api/v1/account", {
+        method: "GET",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer " + token,
+        },
+    });
+    return await resp.json();
+}
+
+async function createAccount(payload) {
+    const token = getToken();
+    console.log(token)
+    const res = await fetch("http://localhost:8080/api/v1/account/create", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer " + token,
+        },
+        body: payload,
+    });
+    return await res.json();
+
+}
 
 async function logout(router) {
     removeToken();
